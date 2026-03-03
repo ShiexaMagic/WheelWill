@@ -2467,6 +2467,11 @@ body[data-grade-mode] .grade-indicator {
   .cw-wheel { max-width: 70px; }
   .pp-viewer-screen { max-height: 22vh; }
   .pp-ch-meter { height: 50px; }
+  /* Tighter gaps on tablet */
+  .pp-right-area { gap: 0.2rem; }
+  .win-body { padding: 0.3rem; }
+  /* Wheel fully hidden past landing on tablet */
+  .wheel-wrapper.wheel-moved { opacity: 0; pointer-events: none !important; }
 }
 
 @media (max-width: 600px) {
@@ -2553,7 +2558,61 @@ body[data-grade-mode] .grade-indicator {
   .lgg-btn { padding: 6px 10px; }
   .lgg-label { font-size: 0.5rem; letter-spacing: 1.5px; }
   /* On mobile, wheel hidden on color too — show only mac-window */
-  .wheel-wrapper.wheel-moved { opacity: 0.3; }
+  .wheel-wrapper.wheel-moved { opacity: 0; pointer-events: none !important; }
+
+  /* On landing (section 0), show wheel at bottom as small trackball */
+  .wheel-wrapper:not(.wheel-moved):not(.wheel-hidden) {
+    top: auto;
+    bottom: 0;
+    height: 45vh;
+    width: 100vw;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 1;
+  }
+  .wheel-wrapper:not(.wheel-moved):not(.wheel-hidden) .spline-canvas {
+    width: 100vw;
+    height: 45vh;
+    transform: none;
+  }
+  /* Hide LGG buttons completely on mobile */
+  .lgg-buttons { display: none !important; }
+
+  /* Tight layout: no gap between media pool and viewer */
+  .pp-layout, .pp-edit-layout, .pp-cinema-layout, .pp-vfx-layout, .pp-sound-layout {
+    gap: 0 !important;
+  }
+  .pp-right-area {
+    gap: 0 !important;
+  }
+  .win-body {
+    padding: 0.2rem;
+    gap: 0;
+  }
+  .glass-panel {
+    border-radius: 4px;
+  }
+  /* Media pool: compact, no extra height */
+  .pp-media-pool {
+    max-height: 18vh;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px 4px 0 0;
+  }
+  /* Viewer: fill available space, no max-height constraint */
+  .pp-viewer {
+    flex: 1;
+    min-height: 0;
+  }
+  .pp-viewer-screen {
+    max-height: none !important;
+    min-height: 120px;
+  }
+  /* Timeline compact */
+  .pp-timeline {
+    max-height: 18% !important;
+    border-radius: 0 0 4px 4px;
+  }
+
   /* CG pool compact on mobile */
   .cg-pool-item { flex: 0 0 80px; }
   .cg-pool-name { font-size: 0.45rem; }
