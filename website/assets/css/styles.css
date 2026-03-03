@@ -2582,11 +2582,11 @@ body[data-grade-mode] .grade-indicator {
     transform: none;
   }
 
-  /* Color grading (section 1): trackball at bottom, smaller */
+  /* Color grading (section 1): trackball at bottom, bigger area */
   .wheel-wrapper.wheel-moved:not(.wheel-hidden) {
     top: auto;
     bottom: 0;
-    height: 40vh;
+    height: 50vh;
     width: 100vw;
     align-items: flex-end;
     justify-content: center;
@@ -2595,17 +2595,17 @@ body[data-grade-mode] .grade-indicator {
   }
   .wheel-wrapper.wheel-moved:not(.wheel-hidden) .spline-canvas {
     width: 100vw;
-    height: 40vh;
+    height: 50vh;
     transform: none;
   }
 
-  /* Color panel mac-window: compact at top to leave room for trackball */
+  /* Color panel mac-window: compact at top (~30% up) to leave room for trackball */
   .panel[data-index="1"] .panel-content.mac-window {
     max-width: 100vw !important;
     width: 100vw !important;
     margin-right: 0 !important;
-    height: 52vh !important;
-    max-height: 52vh !important;
+    height: 38vh !important;
+    max-height: 38vh !important;
     border-radius: 0;
   }
   .panel[data-index="1"] {
@@ -2619,7 +2619,7 @@ body[data-grade-mode] .grade-indicator {
   }
   .cg-viewer-inner {
     aspect-ratio: 16/9;
-    max-height: 28vh;
+    max-height: 20vh;
   }
   .cg-clean-layout {
     gap: 0 !important;
