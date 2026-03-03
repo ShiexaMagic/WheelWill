@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WheelWill Productions — A film and video production company. Stories in Motion.">
+  <title>WheelWill Productions — Stories in Motion</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- Grade overlay for shadow/lift control -->
+  <div id="grade-overlay" class="grade-overlay"></div>
+
+  <!-- Active grade mode indicator -->
+  <div id="grade-indicator" class="grade-indicator"></div>
+
+  <!-- ========== RGB SCOPES ========== -->
+  <div class="rgb-scopes" id="rgb-scopes">
+    <div class="scope-header">
+      <span class="scope-title">RGB PARADE</span>
+      <button class="scope-toggle" id="scope-toggle" aria-label="Toggle scopes">
+        <span class="scope-toggle-icon">▾</span>
+      </button>
+    </div>
+    <div class="scope-body" id="scope-body">
+      <div class="scope-canvases">
+        <div class="scope-channel">
+          <canvas id="scope-r" width="120" height="90"></canvas>
+          <span class="scope-label scope-label-r">R</span>
+        </div>
+        <div class="scope-channel">
+          <canvas id="scope-g" width="120" height="90"></canvas>
+          <span class="scope-label scope-label-g">G</span>
+        </div>
+        <div class="scope-channel">
+          <canvas id="scope-b" width="120" height="90"></canvas>
+          <span class="scope-label scope-label-b">B</span>
+        </div>
+      </div>
+      <div class="scope-waveform">
+        <canvas id="scope-luma" width="380" height="70"></canvas>
+        <span class="scope-label scope-label-luma">LUMA</span>
+      </div>
+      <div class="scope-values">
+        <span id="scope-val-lift">Lift: 0.00</span>
+        <span id="scope-val-gamma">Gamma: 0.00</span>
+        <span id="scope-val-gain">Gain: 0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== NAVBAR (minimal overlay) ========== -->
+  <nav class="navbar">
+    <a href="#" class="nav-logo" data-goto="0">Wheel<span>Will</span></a>
+    <div class="nav-right">
+      <button class="nav-module-btn" data-goto="1">Color</button>
+      <button class="nav-module-btn" data-goto="2">Edit</button>
+      <button class="nav-module-btn" data-goto="3">Sound</button>
+      <button class="nav-module-btn" data-goto="4">Cinema</button>
+      <button class="nav-module-btn" data-goto="5">VFX</button>
+      <button class="btn-nav-cta" data-goto="6">Contact</button>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== MOBILE NAV ========== -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="#" data-goto="0">Home</a>
+    <a href="#" data-goto="1">Color Grading</a>
+    <a href="#" data-goto="2">Edit</a>
+    <a href="#" data-goto="3">Sound</a>
+    <a href="#" data-goto="4">Cinematography</a>
+    <a href="#" data-goto="5">VFX</a>
+    <a href="#" data-goto="6">Contact</a>
+  </div>
+
+  <!-- ========== COLOR GRADING WHEEL (fixed) ========== -->
+  <div class="wheel-wrapper" id="wheel-wrapper">
+
+    <!-- Spline 3D Wheel -->
+    <!-- Spline 3D Canvas -->
+    <canvas class="spline-canvas" id="spline-canvas"></canvas>
+
+    <!-- Section label under wheel -->
+    <div class="wheel-label" id="wheel-label">HOME</div>
+
+    <!-- LGG grade buttons (clickable overlay) -->
+    <div class="lgg-buttons" id="lgg-buttons">
+      <button class="lgg-btn" data-mode="lift" title="Lift — Shadows (L)">
+        <span class="lgg-icon">▼</span>
+        <span class="lgg-label">LIFT</span>
+      </button>
+      <button class="lgg-btn" data-mode="gamma" title="Gamma — Midtones (G)">
+        <span class="lgg-icon">◆</span>
+        <span class="lgg-label">GAMMA</span>
+      </button>
+      <button class="lgg-btn" data-mode="gain" title="Gain — Highlights (B)">
+        <span class="lgg-icon">▲</span>
+        <span class="lgg-label">GAIN</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== SECTIONS (vertical slide) ========== -->
+  <main class="sections" id="sections">
+
+    <!-- 0: LANDING -->
+    <section class="panel active" data-index="0" data-color="#D4A843" data-label="HOME">
+      <div class="scroll-hint">
+        <span>Scroll to explore</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- 1: COLOR GRADING -->
+    <section class="panel" data-index="1" data-color="#D4A843" data-label="COLOR">
+      <div class="panel-content mac-window">
+        <div class="win-titlebar">
+          <div class="win-traffic">
+            <span class="win-btn win-close"></span>
+            <span class="win-btn win-minimize"></span>
+            <span class="win-btn win-fullscreen"></span>
+          </div>
+          <span class="win-title">Color Grading — DaVinci Resolve</span>
+        </div>
+        <div class="win-body">
+          <div class="pp-layout cg-clean-layout">
+
+            <!-- Before/After Wipe Viewer -->
+            <div class="cg-viewer">
+              <div class="cg-viewer-inner">
+                <video class="cg-after viewer-video" id="cg-after" muted loop playsinline preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4"></video>
+                <video class="cg-before viewer-video" id="cg-before" muted loop playsinline preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4" style="filter: saturate(0.3) contrast(0.85)"></video>
+                <div class="cg-wipe-handle" id="cg-wipe-handle">
+                  <div class="cg-wipe-line"></div>
+                  <div class="cg-wipe-circle"><i class="lucide-move-horizontal"></i></div>
+                </div>
+              </div>
+              <div class="cg-viewer-labels">
+                <span>Before</span>
+                <span>After</span>
+              </div>
+              <button class="vc-btn fs-btn cg-fs-btn" title="Fullscreen"><i class="lucide-maximize"></i></button>
+            </div>
+
+            <!-- Media Pool — video thumbnails to switch clips -->
+            <div class="cg-media-pool glass-panel">
+              <div class="pp-panel-head">Media Pool</div>
+              <div class="cg-pool-thumbs">
+                <div class="cg-pool-item active" data-video="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4">
+                  <video class="folio-video" muted loop preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4"></video>
+                  <span class="cg-pool-name">Samsara — Guns Scene</span>
+                </div>
+                <div class="cg-pool-item" data-video="Videos/Ships CAUGHT in MASSIVE Storms.mp4">
+                  <video class="folio-video" muted loop preload="metadata" src="Videos/Ships CAUGHT in MASSIVE Storms.mp4"></video>
+                  <span class="cg-pool-name">Ships in Massive Storms</span>
+                </div>
+                <div class="cg-pool-item" data-video="Videos/SHREDDED TAPES.mp4">
+                  <video class="folio-video" muted loop preload="metadata" src="Videos/SHREDDED TAPES.mp4"></video>
+                  <span class="cg-pool-name">Shredded Tapes</span>
+                </div>
+                <div class="cg-pool-item" data-video="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4">
+                  <video class="folio-video" muted loop preload="metadata" src="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4"></video>
+                  <span class="cg-pool-name">Skaterdater (1965)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2: EDIT -->
+    <section class="panel" data-index="2" data-color="#4A90D9" data-label="EDIT">
+      <div class="panel-content mac-window">
+        <div class="win-titlebar">
+          <div class="win-traffic">
+            <span class="win-btn win-close"></span>
+            <span class="win-btn win-minimize"></span>
+            <span class="win-btn win-fullscreen"></span>
+          </div>
+          <span class="win-title">Edit — DaVinci Resolve</span>
+        </div>
+        <div class="win-body">
+          <div class="pp-layout pp-edit-layout">
+            <!-- Media Pool (left) -->
+            <div class="pp-media-pool glass-panel">
+              <div class="pp-panel-head">Media Pool</div>
+              <div class="pp-bins">
+                <button class="bin-item active-bin"><span class="bin-icon"><i class="lucide-folder"></i></span> All Clips</button>
+              </div>
+              <!-- Editor Folders -->
+              <div class="pp-folders">
+                <div class="editor-folder open" data-editor="shio">
+                  <button class="folder-tab">
+                    <i class="lucide-folder-open"></i>
+                    <span class="folder-name">Shio Khidasheli</span>
+                    <i class="lucide-chevron-down folder-chevron"></i>
+                  </button>
+                  <div class="folder-content">
+                    <div class="pp-thumbs">
+                      <div class="pp-thumb" data-video="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4">
+                        <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4"></video></div>
+                        <span class="pp-thumb-name">Samsara — Guns Scene</span>
+                      </div>
+                      <div class="pp-thumb" data-video="Videos/Ships CAUGHT in MASSIVE Storms.mp4">
+                        <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Ships CAUGHT in MASSIVE Storms.mp4"></video></div>
+                        <span class="pp-thumb-name">Ships in Massive Storms</span>
+                      </div>
+                      <div class="pp-thumb" data-video="Videos/SHREDDED TAPES.mp4">
+                        <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/SHREDDED TAPES.mp4"></video></div>
+                        <span class="pp-thumb-name">Shredded Tapes</span>
+                      </div>
+                      <div class="pp-thumb" data-video="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4">
+                        <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4"></video></div>
+                        <span class="pp-thumb-name">Skaterdater (1965)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="editor-folder" data-editor="mirian">
+                  <button class="folder-tab"><i class="lucide-folder"></i><span class="folder-name">Mirian Shengelaia</span><i class="lucide-chevron-down folder-chevron"></i></button>
+                  <div class="folder-content"><div class="pp-thumbs"><div class="pp-thumb-empty">Coming Soon</div></div></div>
+                </div>
+                <div class="editor-folder" data-editor="levan">
+                  <button class="folder-tab"><i class="lucide-folder"></i><span class="folder-name">Levan Kukhashvili</span><i class="lucide-chevron-down folder-chevron"></i></button>
+                  <div class="folder-content"><div class="pp-thumbs"><div class="pp-thumb-empty">Coming Soon</div></div></div>
+                </div>
+                <div class="editor-folder" data-editor="babi">
+                  <button class="folder-tab"><i class="lucide-folder"></i><span class="folder-name">Babi Jojua</span><i class="lucide-chevron-down folder-chevron"></i></button>
+                  <div class="folder-content"><div class="pp-thumbs"><div class="pp-thumb-empty">Coming Soon</div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Program + Timeline -->
+            <div class="pp-right-area">
+              <!-- Program Monitor -->
+              <div class="pp-viewer glass-panel">
+                <div class="pp-viewer-screen">
+                  <video class="viewer-video" muted loop playsinline preload="metadata"></video>
+                  <span class="pp-viewer-empty">Select a clip from Media Pool</span>
+                </div>
+                <div class="pp-viewer-controls">
+                  <button class="vc-btn"><i class="lucide-skip-back"></i></button>
+                  <button class="vc-btn play-btn"><i class="lucide-play"></i></button>
+                  <button class="vc-btn"><i class="lucide-skip-forward"></i></button>
+                  <span class="vc-tc">01:23:45:12</span>
+                  <button class="vc-btn fs-btn" title="Fullscreen"><i class="lucide-maximize"></i></button>
+                </div>
+              </div>
+
+              <!-- Timeline -->
+              <div class="pp-timeline glass-panel">
+                <div class="pp-tl-header">
+                  <span class="pp-tl-name">Timeline 1 — Main Edit</span>
+                  <div class="pp-tl-tools">
+                    <button class="tl-tool active"><i class="lucide-mouse-pointer"></i></button>
+                    <button class="tl-tool"><i class="lucide-scissors"></i></button>
+                    <button class="tl-tool"><i class="lucide-move-horizontal"></i></button>
+                  </div>
+                </div>
+                <!-- Ruler + Tracks -->
+                <div class="pp-tl-ruler"><span>00:00</span><span>01:00</span><span>02:00</span><span>03:00</span><span>04:00</span><span>05:00</span></div>
+                <div class="pp-tracks">
+                  <div class="pp-playhead"></div>
+                  <div class="pp-track"><span class="pp-track-label video">V2</span><div class="pp-track-clips"><div class="pp-clip video-clip" style="left:8%;width:18%">Titles</div><div class="pp-clip video-clip" style="left:55%;width:25%">B-Roll</div></div></div>
+                  <div class="pp-track"><span class="pp-track-label video">V1</span><div class="pp-track-clips"><div class="pp-clip video-clip" style="left:2%;width:28%">Samsara</div><div class="pp-clip video-clip" style="left:32%;width:22%">Ships</div><div class="pp-clip video-clip" style="left:56%;width:25%">Skater</div></div></div>
+                  <div class="pp-track"><span class="pp-track-label audio">A1</span><div class="pp-track-clips"><div class="pp-clip audio-clip" style="left:2%;width:78%">Main Audio</div></div></div>
+                  <div class="pp-track"><span class="pp-track-label audio">A2</span><div class="pp-track-clips"><div class="pp-clip audio-clip" style="left:15%;width:35%">SFX</div><div class="pp-clip audio-clip" style="left:55%;width:30%">Music</div></div></div>
+                </div>
+                <!-- Audio meters -->
+                <div class="pp-meters">
+                  <div class="pp-meter"><div class="pp-meter-fill" style="height:65%"></div></div>
+                  <div class="pp-meter"><div class="pp-meter-fill" style="height:58%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resolve bottom nav -->
+          <nav class="pp-resolve-nav">
+            <button class="rp-btn" data-rp="media"><i class="lucide-clapperboard"></i> Media</button>
+            <button class="rp-btn" data-rp="cut"><i class="lucide-scissors"></i> Cut</button>
+            <button class="rp-btn active" data-rp="edit"><i class="lucide-film"></i> Edit</button>
+            <button class="rp-btn" data-rp="fusion"><i class="lucide-blend"></i> Fusion</button>
+            <button class="rp-btn" data-rp="color"><i class="lucide-palette"></i> Color</button>
+            <button class="rp-btn" data-rp="fairlight"><i class="lucide-music"></i> Fairlight</button>
+            <button class="rp-btn" data-rp="deliver"><i class="lucide-rocket"></i> Deliver</button>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3: SOUND -->
+    <section class="panel" data-index="3" data-color="#4AD98F" data-label="SOUND">
+      <div class="panel-content mac-window">
+        <div class="win-titlebar">
+          <div class="win-traffic">
+            <span class="win-btn win-close"></span>
+            <span class="win-btn win-minimize"></span>
+            <span class="win-btn win-fullscreen"></span>
+          </div>
+          <span class="win-title">Sound Design — Pro Tools</span>
+        </div>
+        <div class="win-body">
+          <div class="pp-layout pp-sound-layout">
+            <!-- Transport bar -->
+            <div class="pp-transport glass-panel">
+              <button class="transport-btn"><i class="lucide-skip-back"></i></button>
+              <button class="transport-btn"><i class="lucide-rewind"></i></button>
+              <button class="transport-btn play"><i class="lucide-play"></i></button>
+              <button class="transport-btn rec"><i class="lucide-circle"></i></button>
+              <button class="transport-btn"><i class="lucide-skip-forward"></i></button>
+              <span class="transport-tc">00:00:00.000</span>
+            </div>
+
+            <!-- Mixer -->
+            <div class="pp-mixer glass-panel">
+              <div class="pp-panel-head">Mixer</div>
+              <div class="pp-mixer-channels">
+                <div class="pp-mixer-ch">
+                  <div class="pp-ch-meter"><div class="pp-ch-meter-fill" style="height:65%"></div></div>
+                  <input type="range" min="0" max="100" value="75" orient="vertical" class="pp-fader">
+                  <span class="pp-ch-label">DIA</span>
+                </div>
+                <div class="pp-mixer-ch">
+                  <div class="pp-ch-meter"><div class="pp-ch-meter-fill" style="height:45%"></div></div>
+                  <input type="range" min="0" max="100" value="60" orient="vertical" class="pp-fader">
+                  <span class="pp-ch-label">SFX</span>
+                </div>
+                <div class="pp-mixer-ch">
+                  <div class="pp-ch-meter"><div class="pp-ch-meter-fill" style="height:80%"></div></div>
+                  <input type="range" min="0" max="100" value="85" orient="vertical" class="pp-fader">
+                  <span class="pp-ch-label">MUS</span>
+                </div>
+                <div class="pp-mixer-ch">
+                  <div class="pp-ch-meter"><div class="pp-ch-meter-fill" style="height:55%"></div></div>
+                  <input type="range" min="0" max="100" value="70" orient="vertical" class="pp-fader">
+                  <span class="pp-ch-label">AMB</span>
+                </div>
+                <div class="pp-mixer-ch">
+                  <div class="pp-ch-meter"><div class="pp-ch-meter-fill" style="height:35%"></div></div>
+                  <input type="range" min="0" max="100" value="50" orient="vertical" class="pp-fader">
+                  <span class="pp-ch-label">FOL</span>
+                </div>
+                <div class="pp-mixer-ch pp-master-ch">
+                  <div class="pp-ch-meter"><div class="pp-ch-meter-fill" style="height:72%"></div></div>
+                  <input type="range" min="0" max="100" value="80" orient="vertical" class="pp-fader">
+                  <span class="pp-ch-label">MST</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audio Timeline -->
+            <div class="pp-timeline glass-panel">
+              <div class="pp-tl-header">
+                <span class="pp-tl-name">Session — Sound Mix</span>
+                <div class="pp-tl-tools">
+                  <button class="tl-tool active"><i class="lucide-mouse-pointer"></i></button>
+                  <button class="tl-tool"><i class="lucide-scissors"></i></button>
+                </div>
+              </div>
+              <div class="pp-tl-ruler"><span>00:00</span><span>01:00</span><span>02:00</span><span>03:00</span><span>04:00</span><span>05:00</span></div>
+              <div class="pp-tracks">
+                <div class="pp-playhead"></div>
+                <div class="pp-track"><span class="pp-track-label audio">DIA</span><div class="pp-track-clips"><div class="pp-clip audio-clip" style="left:2%;width:80%">Dialogue</div></div></div>
+                <div class="pp-track"><span class="pp-track-label audio">SFX</span><div class="pp-track-clips"><div class="pp-clip audio-clip" style="left:10%;width:30%">Gunshot</div><div class="pp-clip audio-clip" style="left:45%;width:35%">Ambience</div></div></div>
+                <div class="pp-track"><span class="pp-track-label audio">MUS</span><div class="pp-track-clips"><div class="pp-clip audio-clip" style="left:0%;width:95%">Score</div></div></div>
+                <div class="pp-track"><span class="pp-track-label audio">FOL</span><div class="pp-track-clips"><div class="pp-clip audio-clip" style="left:5%;width:20%">Steps</div><div class="pp-clip audio-clip" style="left:50%;width:25%">Cloth</div></div></div>
+              </div>
+            </div>
+
+            <!-- Sound Projects -->
+            <div class="pp-portfolio glass-panel">
+              <div class="pp-panel-head">Projects</div>
+              <div class="pp-thumbs">
+                <div class="pp-thumb" data-video="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4"></video></div>
+                  <span class="pp-thumb-name">Samsara — Guns Scene</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/Ships CAUGHT in MASSIVE Storms.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Ships CAUGHT in MASSIVE Storms.mp4"></video></div>
+                  <span class="pp-thumb-name">Ships — Storm Sound</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/SHREDDED TAPES.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/SHREDDED TAPES.mp4"></video></div>
+                  <span class="pp-thumb-name">Shredded Tapes</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4"></video></div>
+                  <span class="pp-thumb-name">Skaterdater (1965)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4: CINEMATOGRAPHY -->
+    <section class="panel" data-index="4" data-color="#D94A4A" data-label="CINEMA">
+      <div class="panel-content mac-window">
+        <div class="win-titlebar">
+          <div class="win-traffic">
+            <span class="win-btn win-close"></span>
+            <span class="win-btn win-minimize"></span>
+            <span class="win-btn win-fullscreen"></span>
+          </div>
+          <span class="win-title">Cinematography — Camera Monitor</span>
+        </div>
+        <div class="win-body">
+          <div class="pp-layout pp-cinema-layout">
+            <!-- Camera Viewfinder -->
+            <div class="pp-viewfinder glass-panel">
+              <div class="pp-viewer-screen pp-camera-screen">
+                <video class="viewer-video" muted loop playsinline preload="metadata"></video>
+                <span class="pp-viewer-empty">Select a clip to preview</span>
+                <div class="camera-osd">
+                  <div class="osd-top">
+                    <span class="osd-item">● REC</span>
+                    <span class="osd-item">4K 23.976</span>
+                    <span class="osd-item">ISO 800</span>
+                    <span class="osd-item">WB 5600K</span>
+                    <span class="osd-item">S-LOG3</span>
+                  </div>
+                  <div class="osd-center">
+                    <div class="osd-crosshair"></div>
+                  </div>
+                  <div class="osd-bottom">
+                    <span class="osd-item">F2.8</span>
+                    <span class="osd-item">1/48</span>
+                    <span class="osd-item">00:05:23:14</span>
+                    <span class="osd-item">⬛⬛⬛⬜ 78%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pp-viewer-controls">
+                <button class="vc-btn"><i class="lucide-skip-back"></i></button>
+                <button class="vc-btn play-btn"><i class="lucide-play"></i></button>
+                <button class="vc-btn"><i class="lucide-skip-forward"></i></button>
+                <span class="vc-tc">00:05:23:14</span>
+                <button class="vc-btn fs-btn" title="Fullscreen"><i class="lucide-maximize"></i></button>
+              </div>
+            </div>
+
+            <!-- DP Selector + Reels -->
+            <div class="pp-cinema-sidebar glass-panel">
+              <div class="pp-panel-head">Directors of Photography</div>
+              <div class="pp-dp-list">
+                <button class="dp-btn active" data-dp="0">DP 1</button>
+                <button class="dp-btn" data-dp="1">DP 2</button>
+                <button class="dp-btn" data-dp="2">DP 3</button>
+              </div>
+              <div class="pp-panel-head" style="margin-top:12px;">Camera Reels</div>
+              <div class="pp-thumbs">
+                <div class="pp-thumb" data-video="Videos/Ships CAUGHT in MASSIVE Storms.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Ships CAUGHT in MASSIVE Storms.mp4"></video></div>
+                  <span class="pp-thumb-name">Ships in Massive Storms</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4"></video></div>
+                  <span class="pp-thumb-name">Samsara — Guns Scene</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4"></video></div>
+                  <span class="pp-thumb-name">Skaterdater (1965)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5: VFX -->
+    <section class="panel" data-index="5" data-color="#9B59B6" data-label="VFX">
+      <div class="panel-content mac-window">
+        <div class="win-titlebar">
+          <div class="win-traffic">
+            <span class="win-btn win-close"></span>
+            <span class="win-btn win-minimize"></span>
+            <span class="win-btn win-fullscreen"></span>
+          </div>
+          <span class="win-title">VFX — Nuke / After Effects</span>
+        </div>
+        <div class="win-body">
+          <div class="pp-layout pp-vfx-layout">
+            <!-- Comp Viewer -->
+            <div class="pp-viewer glass-panel">
+              <div class="pp-viewer-screen">
+                <video class="viewer-video" muted loop playsinline preload="metadata"></video>
+                <span class="pp-viewer-empty">Select a clip to preview</span>
+              </div>
+              <div class="pp-viewer-controls">
+                <button class="vc-btn"><i class="lucide-skip-back"></i></button>
+                <button class="vc-btn play-btn"><i class="lucide-play"></i></button>
+                <button class="vc-btn"><i class="lucide-skip-forward"></i></button>
+                <span class="vc-tc">00:00:00:00</span>
+                <button class="vc-btn fs-btn" title="Fullscreen"><i class="lucide-maximize"></i></button>
+              </div>
+            </div>
+
+            <!-- Node tree / Layer panel -->
+            <div class="pp-vfx-sidebar glass-panel">
+              <div class="pp-panel-head">Compositions</div>
+              <div class="pp-thumbs">
+                <div class="pp-thumb" data-video="Videos/SHREDDED TAPES.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/SHREDDED TAPES.mp4"></video></div>
+                  <span class="pp-thumb-name">Shredded Tapes</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Samsara - 2011 - Guns scene - Ayub Ogada - Nach M (360p, h264).mp4"></video></div>
+                  <span class="pp-thumb-name">Samsara — Guns Scene</span>
+                </div>
+                <div class="pp-thumb" data-video="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4">
+                  <div class="pp-thumb-vis"><video class="folio-video" muted loop preload="metadata" src="Videos/Skaterdater (1965) _ The World's First Skateboard Movie.mp4"></video></div>
+                  <span class="pp-thumb-name">Skaterdater (1965)</span>
+                </div>
+              </div>
+
+              <div class="pp-panel-head" style="margin-top:12px;">Node Graph</div>
+              <div class="node-canvas">
+                <div class="node" style="left:20px; top:15px;"><span class="node-label">SRC</span></div>
+                <svg class="node-connection" style="position:absolute;left:0;top:0;width:100%;height:100%;">
+                  <line x1="90" y1="40" x2="140" y2="40" stroke="rgba(155,89,182,0.4)" stroke-width="2"/>
+                </svg>
+                <div class="node" style="left:140px; top:15px;"><span class="node-label">CMP</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6: CONTACT -->
+    <section class="panel" data-index="6" data-color="#E67E22" data-label="CONTACT">
+      <div class="panel-content mac-window">
+        <div class="win-titlebar">
+          <div class="win-traffic">
+            <span class="win-btn win-close"></span>
+            <span class="win-btn win-minimize"></span>
+            <span class="win-btn win-fullscreen"></span>
+          </div>
+          <span class="win-title">WheelWill — Contact</span>
+        </div>
+        <div class="win-body contact-layout">
+          <!-- Module icons fading in -->
+          <div class="contact-modules">
+            <div class="contact-mod"><i class="lucide-palette"></i><span>Color</span></div>
+            <div class="contact-mod"><i class="lucide-scissors"></i><span>Edit</span></div>
+            <div class="contact-mod"><i class="lucide-music"></i><span>Sound</span></div>
+            <div class="contact-mod"><i class="lucide-camera"></i><span>Cinema</span></div>
+            <div class="contact-mod"><i class="lucide-sparkles"></i><span>VFX</span></div>
+          </div>
+          <h2 class="section-title">Let's Create<br><em>Together</em></h2>
+          <p class="desc">All five modules. One team. Your project.</p>
+          <form class="contact-form" id="contact-form">
+            <div class="form-row">
+              <input type="text" name="name" placeholder="Your Name" required>
+              <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <select name="projectType" required>
+              <option value="" disabled selected>Project Type</option>
+              <option>Color Grading</option>
+              <option>Editing</option>
+              <option>Sound Design</option>
+              <option>Cinematography</option>
+              <option>VFX</option>
+              <option>Full Package</option>
+            </select>
+            <textarea name="message" placeholder="Tell us about your project..." rows="3" required></textarea>
+            <button type="submit" class="btn-primary">Start Your Project →</button>
+          </form>
+          <div class="contact-links">
+            <a href="mailto:hello@wheelwill.com">hello@wheelwill.com</a>
+            <span>·</span>
+            <a href="https://instagram.com/wheelwill" target="_blank">Instagram</a>
+            <span>·</span>
+            <a href="https://youtube.com/@wheelwill" target="_blank">YouTube</a>
+            <span>·</span>
+            <a href="https://vimeo.com/wheelwill" target="_blank">Vimeo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <div class="site-footer">© 2026 WheelWill Productions</div>
+
+  <!-- Spline Runtime -->
+  <script type="importmap">
+    { "imports": { "@splinetool/runtime": "https://unpkg.com/@splinetool/runtime@1.12.61/build/runtime.js" } }
+  </script>
+  <script src="assets/js/main.js" type="module"></script>
+</body>
+</html>

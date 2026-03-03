@@ -1,0 +1,15 @@
+# Videos — too large for git
+Videos/
+website/Videos
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Node
+node_modules/

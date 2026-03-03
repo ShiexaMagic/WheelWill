@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WheelWill Productions — Post-Production Suite: Editing &amp; Color Grading">
+  <title>WheelWill — Post-Production</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.min.css">
+  <link rel="stylesheet" href="assets/css/post-production.css">
+</head>
+<body>
+
+  <!-- ========== TOP BAR ========== -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <a href="index.html" class="back-link">← Back</a>
+      <span class="app-logo">Wheel<span class="accent">Will</span></span>
+      <span class="divider">|</span>
+      <span class="page-title">Post-Production</span>
+    </div>
+    <div class="top-bar-center">
+      <div class="transport" id="transport">
+        <span class="tc" id="timecode">00:00:00:00</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="tb-btn" id="btn-fullscreen" title="Fullscreen"><i class="lucide-maximize"></i></button>
+    </div>
+  </header>
+
+  <!-- ========== PAGE TABS ========== -->
+  <nav class="page-tabs" id="page-tabs">
+    <button class="page-tab active" data-page="editing">Editing</button>
+    <button class="page-tab" data-page="color-grading">Color Grading</button>
+  </nav>
+
+  <!-- ============================================================
+       EDITING PAGE
+       ============================================================ -->
+  <div class="page-content active" id="page-editing">
+    <div class="edit-layout">
+
+      <!-- ---- MEDIA POOL (left) ---- -->
+      <div class="media-pool glass-panel" id="media-pool">
+        <div class="panel-header">
+          <span class="panel-tab active" data-mptab="media">Media Pool</span>
+        </div>
+
+        <!-- Bins (video folders) -->
+        <div class="bins" id="bins">
+          <button class="bin-item active-bin" data-artist="all">
+            <span class="bin-icon"><i class="lucide-folder"></i></span> All Clips
+          </button>
+          <button class="bin-item" data-artist="reference">
+            <span class="bin-icon"><i class="lucide-folder-open"></i></span> Reference Videos
+          </button>
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="media-thumbs" id="media-thumbs"></div>
+      </div>
+
+      <!-- ---- RIGHT: Program viewer + Timeline ---- -->
+      <div class="right-area">
+
+        <!-- Program Monitor -->
+        <div class="program-monitor glass-panel" id="program-viewer">
+          <div class="viewer-screen" id="program-screen">
+            <div class="viewer-empty">Double-click or drag a clip to start</div>
+          </div>
+          <div class="viewer-controls">
+            <button class="vc-btn" data-action="pgm-prev" title="Back 5s"><i class="lucide-skip-back"></i></button>
+            <button class="vc-btn play-btn" data-action="pgm-play" id="pgm-play-btn" title="Play/Pause"><i class="lucide-play"></i></button>
+            <button class="vc-btn" data-action="pgm-next" title="Forward 5s"><i class="lucide-skip-forward"></i></button>
+            <span class="vc-tc" id="viewer-tc">00:00:00:00</span>
+            <button class="vc-btn fs-btn" data-action="pgm-fullscreen" title="Fullscreen"><i class="lucide-maximize"></i></button>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-area glass-panel" id="timeline-area">
+          <div class="timeline-header">
+            <div class="timeline-name" id="timeline-name">No Timeline</div>
+            <div class="timeline-toolbar">
+              <button class="tl-tool active" data-tool="select" title="Select"><i class="lucide-mouse-pointer"></i></button>
+              <button class="tl-tool" data-tool="trim" title="Trim"><i class="lucide-move-horizontal"></i></button>
+              <button class="tl-tool" data-tool="blade" title="Blade"><i class="lucide-scissors"></i></button>
+            </div>
+            <div class="timeline-zoom">
+              <button class="zoom-btn" id="zoom-out">−</button>
+              <input type="range" class="zoom-slider" id="zoom-slider" min="0.5" max="4" step="0.1" value="1">
+              <button class="zoom-btn" id="zoom-in">+</button>
+            </div>
+          </div>
+
+          <!-- Ruler -->
+          <div class="tl-ruler-wrap">
+            <div class="tl-label-col ruler-label"></div>
+            <div class="tl-ruler" id="tl-ruler">
+              <div class="playhead" id="playhead"></div>
+            </div>
+          </div>
+
+          <!-- Tracks -->
+          <div class="tl-tracks-wrap" id="tl-tracks-wrap">
+            <div class="tl-label-col" id="tl-track-labels"></div>
+            <div class="tl-tracks" id="tl-tracks"></div>
+          </div>
+
+          <!-- Audio meters -->
+          <div class="tl-meters" id="audio-meters">
+            <div class="meter"><div class="meter-fill" style="height:65%"></div></div>
+            <div class="meter"><div class="meter-fill" style="height:58%"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DaVinci-style bottom nav -->
+    <nav class="resolve-pages" id="resolve-pages">
+      <button class="rp-btn" data-rp="media"><i class="lucide-clapperboard"></i> Media</button>
+      <button class="rp-btn" data-rp="cut"><i class="lucide-scissors"></i> Cut</button>
+      <button class="rp-btn active" data-rp="edit"><i class="lucide-film"></i> Edit</button>
+      <button class="rp-btn" data-rp="fusion"><i class="lucide-blend"></i> Fusion</button>
+      <button class="rp-btn" data-rp="color" id="rp-color"><i class="lucide-palette"></i> Color</button>
+      <button class="rp-btn" data-rp="fairlight"><i class="lucide-music"></i> Fairlight</button>
+      <button class="rp-btn" data-rp="deliver"><i class="lucide-rocket"></i> Deliver</button>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       COLOR GRADING PAGE
+       ============================================================ -->
+  <div class="page-content" id="page-color-grading">
+    <div class="color-page">
+      <div class="color-header">
+        <h2>Color Grading Suite</h2>
+        <p class="color-desc">Professional color grading for cinema-quality results.</p>
+      </div>
+
+      <div class="color-layout">
+        <div class="color-viewer glass-panel" id="color-viewer">
+          <div class="viewer-screen color-screen" id="color-screen">
+            <div class="viewer-empty">Load a project to begin grading</div>
+          </div>
+        </div>
+
+        <div class="color-wheels">
+          <div class="cw-panel glass-panel">
+            <div class="cw-wheel" style="background: radial-gradient(circle, #1a1a2e 30%, #0a0a0a 100%);">
+              <div class="cw-crosshair"></div>
+            </div>
+            <span class="cw-label">Lift</span>
+            <input type="range" class="cw-slider" min="-1" max="1" step="0.01" value="0">
+          </div>
+          <div class="cw-panel glass-panel">
+            <div class="cw-wheel" style="background: radial-gradient(circle, #2a2a2a 30%, #0a0a0a 100%);">
+              <div class="cw-crosshair"></div>
+            </div>
+            <span class="cw-label">Gamma</span>
+            <input type="range" class="cw-slider" min="-1" max="1" step="0.01" value="0">
+          </div>
+          <div class="cw-panel glass-panel">
+            <div class="cw-wheel" style="background: radial-gradient(circle, #3a3a2e 30%, #0a0a0a 100%);">
+              <div class="cw-crosshair"></div>
+            </div>
+            <span class="cw-label">Gain</span>
+            <input type="range" class="cw-slider" min="-1" max="1" step="0.01" value="0">
+          </div>
+          <div class="cw-panel glass-panel">
+            <div class="cw-wheel" style="background: radial-gradient(circle, #2e2e3a 30%, #0a0a0a 100%);">
+              <div class="cw-crosshair"></div>
+            </div>
+            <span class="cw-label">Offset</span>
+            <input type="range" class="cw-slider" min="-1" max="1" step="0.01" value="0">
+          </div>
+        </div>
+
+        <div class="color-curves glass-panel">
+          <div class="curves-header">Curves</div>
+          <div class="curves-box">
+            <svg class="curves-svg" viewBox="0 0 200 200">
+              <line x1="0" y1="200" x2="200" y2="0" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4"/>
+              <path d="M0,200 C50,180 150,20 200,0" stroke="#D4A843" stroke-width="2" fill="none"/>
+              <path d="M0,200 C60,190 140,30 200,0" stroke="#e44" stroke-width="1.5" fill="none" opacity="0.4"/>
+              <path d="M0,200 C40,170 160,10 200,0" stroke="#4a4" stroke-width="1.5" fill="none" opacity="0.4"/>
+              <path d="M0,200 C55,185 145,25 200,0" stroke="#44a" stroke-width="1.5" fill="none" opacity="0.4"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="node-graph glass-panel">
+        <div class="node-header">Node Editor</div>
+        <div class="node-canvas">
+          <div class="node" style="left:40px; top:25px;"><span class="node-label">01</span></div>
+          <svg class="node-connection" style="position:absolute;left:0;top:0;width:100%;height:100%;">
+            <line x1="110" y1="50" x2="180" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          </svg>
+          <div class="node" style="left:180px; top:25px;"><span class="node-label">02</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FULLSCREEN OVERLAY ========== -->
+  <div class="fullscreen-overlay" id="fullscreen-overlay">
+    <div class="fs-viewer" id="fs-viewer"></div>
+    <div class="fs-controls">
+      <button class="vc-btn" data-action="fs-prev"><i class="lucide-skip-back"></i></button>
+      <button class="vc-btn play-btn" data-action="fs-play" id="fs-play-btn"><i class="lucide-play"></i></button>
+      <button class="vc-btn" data-action="fs-next"><i class="lucide-skip-forward"></i></button>
+      <span class="fs-tc" id="fs-timecode">00:00:00:00</span>
+      <button class="vc-btn fs-close" data-action="fs-close"><i class="lucide-x"></i></button>
+    </div>
+  </div>
+
+  <script src="assets/js/post-production.js"></script>
+</body>
+</html>
